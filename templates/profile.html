@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="title">{% block title %} Profiles {% endblock %}</h1>
+    <div class="content">
+        <div class="profile">
+            <p><b>#{{ profile.id }}</b></p>
+            <b>
+                <p class="name">{{ profile.name }}</p>
+            </b>
+            <p>ID: {{ profile.id }}</p>
+            <p>Email: {{ profile.email_address }} </p>
+            <p>Phone: {{ profile.phone_number }} </p>
+            <p>Hashtags: {{ profile.custom_hashtag}} </p>
+            <p>Joined at: {{ profile.time_created }}</p>
+            <div class="data">
+                <h4>Photo</h4>
+                <p>{{ profile.photo_path }}</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
