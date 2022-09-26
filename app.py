@@ -27,7 +27,7 @@ class Profile(db.Model):
     phone_number = db.Column(db.Integer, nullable=False)
     custom_hashtag = db.Column(db.String(70))
     email_address = db.Column(db.String(70), nullable=False)
-    photo_path = db.Column(db.Integer, nullable=False)
+    photo_path = db.Column(db.String(120))
     time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
     card_rl = relationship("Card", backref="profile", uselist=False)
@@ -44,9 +44,9 @@ class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     serial_number = db.Column(db.Integer, unique_key=True)
     id_person = db.Column(db.Integer, ForeignKey("profile.id"))
-    card_sak = db.Column(db.String(20), nullable=False)
-    card_type = db.Column(db.String(20),  nullable=False)
-    firmware = db.Column(db.String(20), nullable=False)
+    card_sak = db.Column(db.String(20))
+    card_type = db.Column(db.String(20))
+    firmware = db.Column(db.String(20))
     time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
     
@@ -59,7 +59,7 @@ class Record(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_person = db.Column(db.Integer, ForeignKey("profile.id"), nullable = False)
     time_created = db.Column(db.DateTime(timezone=True), server_default=func.now(), nullable = False)
-    in_or_out = db.Column(db.Boolean, nullable=False)
+    in_or_out = db.Column(db.Boolean)
 
     def __repr__(self):
         return f"Record : {self.id}, created at: {self.time_created}"
@@ -117,16 +117,16 @@ def passlog():
         if (request_data['auth_key']==auth_key):
             if('serial_number' in request_data):
                 serial_number = request_data['serial_number']
-            if('user_id' in request_data):
-                person_id = request_data['user_id']
-            if('card_sak' in request_data):
-                card_sak = request_data['card_sak']
-            if('card_type' in request_data):
-                card_type = request_data['card_type']
-            if('firmware' in request_data):
-                firmware = request_data['firmware']
-            if('in_or_out'):
-                in_or_out = bool(int(request_data['in_or_out']))
+            # if('user_id' in request_data):
+            #     person_id = request_data['user_id']
+            # if('card_sak' in request_data):
+            #     card_sak = request_data['card_sak']
+            # if('card_type' in request_data):
+            #     card_type = request_data['card_type']
+            # if('firmware' in request_data):
+            #     firmware = request_data['firmware']
+            # if('in_or_out'):
+            #     in_or_out = bool(int(request_data['in_or_out']))
 
             acc_test = db.session.query(Card.serial_number).filter_by(serial_number = serial_number).all()
             if bool(acc_test):
@@ -137,7 +137,7 @@ def passlog():
             else:
                 acc_test = False
 
-            return jsonify(person_id = person_id, access = bool(acc_test))
+            return jsonify(user_id = person_id, access = bool(acc_test))
     else:
         return jsonify(error='No data recieved', message = 'Can\'t find JSON data') 
 
