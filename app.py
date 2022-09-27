@@ -52,7 +52,7 @@ class Card(db.Model):
     
 
     def __repr__(self):
-        return f'<Card {self.id} type {self.card_type}>'   
+        return f'<Card {self.id} type {self.card_type} serial: {self.serial_number}>'   
 
 class Record(db.Model):
     __tablename__ = "record"
@@ -129,15 +129,15 @@ def passlog():
             #     in_or_out = bool(int(request_data['in_or_out']))
 
             acc_test = db.session.query(Card.serial_number).filter_by(serial_number = serial_number).all()
+            person_id = int(db.session.query(Card.id_person).filter_by(serial_number = serial_number).all()[0][0])
+            
             if bool(acc_test):
-                record = Record(id_person = person_id, in_or_out = in_or_out)
+                record = Record(id_person = person_id)
                 db.session.add(record)
                 db.session.commit()
-                acc_test = True
+                return "1"
             else:
-                acc_test = False
-
-            return jsonify(user_id = person_id, access = bool(acc_test))
+                return "0"
     else:
         return jsonify(error='No data recieved', message = 'Can\'t find JSON data') 
 
@@ -166,7 +166,7 @@ def write_profile():
                 db.session.commit()
                 return jsonify(info='JSON parsing success', message = 'Data written in DB')
             else:
-                return jsonify(error='Wrong auth key', message = 'Please enter proper key')
+                return jsonify(error='JSON parsing error', message = 'Something wrong with data')
         else:
             return jsonify(error='JSON parsing error', message = 'Something wrong with data')
     else:
